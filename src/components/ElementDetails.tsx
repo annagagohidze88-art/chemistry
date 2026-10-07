@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { X, ExternalLink, Atom, Sparkles, Layers, Activity, Plus, Check, Camera, ImageOff } from 'lucide-react';
+import { X, ExternalLink, Atom, Sparkles, Layers, Activity, Plus, Check, Camera, ImageOff, Info } from 'lucide-react';
 import type { ChemicalElement } from '../types/element';
 import { ROMAN_PERIODS } from '../types/element';
 import { CATEGORIES } from '../data/categories';
@@ -180,8 +180,9 @@ export const ElementDetails: React.FC<ElementDetailsProps> = ({
             </div>
 
             {element.image?.title && !imageError && (
-              <p className="text-[11px] text-slate-400 mt-2 truncate" title={element.image.title}>
-                📷 {element.image.title}
+              <p className="text-[11px] text-slate-400 mt-2 truncate flex items-center gap-1.5" title={element.image.title}>
+                <Camera className="w-3 h-3 text-slate-400 shrink-0" />
+                <span>{element.image.title}</span>
               </p>
             )}
           </div>
@@ -274,8 +275,9 @@ export const ElementDetails: React.FC<ElementDetailsProps> = ({
                 </div>
               </div>
 
-              <div className="text-[11px] text-slate-400 italic bg-slate-900/40 p-2 rounded border border-slate-800/80 leading-normal">
-                ℹ️ <strong>განმარტება:</strong> ვალენტობა და ჟანგვის რიცხვი ცალ-ცალკე განისაზღვრება. ვალენტობა გამოხატავს ატომის მიერ წარმოქმნილი კოვალენტური ბმების რაოდენობას, ხოლო ჟანგვის რიცხვი — მის პირობით მუხტს. მათი მნიშვნელობები ნაერთის მიხედვით შეიძლება იცვლებოდეს.
+              <div className="text-[11px] text-slate-400 italic bg-slate-900/40 p-2 rounded border border-slate-800/80 leading-normal flex items-start gap-1.5">
+                <Info className="w-3.5 h-3.5 text-sky-400 shrink-0 mt-0.5" />
+                <span><strong>განმარტება:</strong> ვალენტობა და ჟანგვის რიცხვი ცალ-ცალკე განისაზღვრება. ვალენტობა გამოხატავს ატომის მიერ წარმოქმნილი კოვალენტური ბმების რაოდენობას, ხოლო ჟანგვის რიცხვი — მის პირობით მუხტს. მათი მნიშვნელობები ნაერთის მიხედვით შეიძლება იცვლებოდეს.</span>
               </div>
             </div>
 

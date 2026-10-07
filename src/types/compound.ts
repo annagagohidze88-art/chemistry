@@ -32,17 +32,17 @@ export interface Compound {
   // მომხმარებლის მიერ სპეციფიკურად მოთხოვნილი დეტალები:
   precipitate?: {
     isPrecipitate: boolean;
-    colorAndForm: string; // მაგ. "⬇️ თეთრი ხაჭოსებრი ნალექი", "⬇️ კაშკაშა ყვითელი კრისტალური ნალექი"
+    colorAndForm: string; // მაგ. "[ნალექი] თეთრი ხაჭოსებრი ნალექი", "კაშკაშა ყვითელი კრისტალური ნალექი"
   };
   gasRelease?: {
     isGas: boolean;
-    gasType: string; // მაგ. "⬆️ უფერო, უსუნო აირი", "⬆️ მურა ფერის მახრჩობელა აირი (NO₂)"
+    gasType: string; // მაგ. "[აირი] უფერო, უსუნო აირი", "მურა ფერის მახრჩობელა აირი (NO₂)"
   };
   nonSaltFormingOxide?: {
     isNonSaltForming: boolean;
-    explanation: string; // მაგ. "⚠️ მარილარწარმომქმნელი (ინდიფერენტული) ოქსიდი — არ რეაგირებს წყალთან..."
+    explanation: string; // მაგ. "[გაფრთხილება] მარილარწარმომქმნელი (ინდიფერენტული) ოქსიდი — არ რეაგირებს წყალთან..."
   };
-  hazardWarning?: string; // მაგ. "⚠️ მომწამვლელი აირი"
+  hazardWarning?: string; // მაგ. "[საშიშროება] მომწამვლელი აირი"
 }
 
 export interface CompoundLookupResult {

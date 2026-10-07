@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { balanceEquation, type BalanceResult } from '../../utils/equationBalancer';
-import { Equal, Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Equal, Sparkles, AlertCircle, CheckCircle2, Scale, X } from 'lucide-react';
 
 const REACTION_PRESETS = [
   { label: 'წყლის სინთეზი', eq: 'H2 + O2 -> H2O' },
@@ -67,9 +67,10 @@ export const EquationBalancer: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setInputEquation('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-sm px-1.5 py-0.5"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1 rounded-md"
+                title="გასუფთავება"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             )}
           </div>
@@ -127,7 +128,8 @@ export const EquationBalancer: React.FC = () => {
               <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-3">
                 <div className="flex items-center justify-between">
                   <h4 className="text-xs font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
-                    <span>⚖️ ატომთა ბალანსის შემოწმება (მასის მუდმივობის კანონი):</span>
+                    <Scale className="w-4 h-4 text-amber-400" />
+                    <span>ატომთა ბალანსის შემოწმება (მასის მუდმივობის კანონი):</span>
                   </h4>
                   <span className="text-[11px] text-slate-500 font-mono">მარცხენა = მარჯვენა</span>
                 </div>
@@ -146,7 +148,7 @@ export const EquationBalancer: React.FC = () => {
                           {chk.leftCount} = {chk.rightCount}
                         </span>
                       </div>
-                      <span className="text-emerald-400 font-bold text-sm">✓</span>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                     </div>
                   ))}
                 </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { calculateMolarMass, type MolarMassResult } from '../../utils/molarMass';
-import { Scale, Sparkles, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Scale, Sparkles, AlertCircle, CheckCircle2, X, Droplets } from 'lucide-react';
 
 const PRESETS = [
   { label: 'H₂O (წყალი)', formula: 'H2O' },
@@ -68,9 +68,10 @@ export const MolarMassCalculator: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setInputFormula('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 text-sm px-1.5 py-0.5"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1 rounded-md"
+                title="გასუფთავება"
               >
-                ✕
+                <X className="w-4 h-4" />
               </button>
             )}
           </div>
@@ -127,7 +128,10 @@ export const MolarMassCalculator: React.FC = () => {
 
                 {result.hydrateWaterMoles && result.hydrateWaterPercentage && (
                   <div className="p-3 rounded-xl bg-sky-950/60 border border-sky-800/80 text-sky-200 text-xs">
-                    <span className="font-bold block text-sky-300 mb-0.5">💧 კრისტალიზაციური წყალი:</span>
+                    <span className="font-bold flex items-center gap-1.5 text-sky-300 mb-0.5">
+                      <Droplets className="w-3.5 h-3.5" />
+                      <span>კრისტალიზაციური წყალი:</span>
+                    </span>
                     <span>
                       {result.hydrateWaterMoles} მოლი H₂O ({result.hydrateWaterPercentage.toFixed(1)}% მთლიანი მასიდან)
                     </span>

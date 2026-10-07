@@ -13,6 +13,7 @@ import {
   ArrowUpCircle,
   PlusCircle,
   HelpCircle,
+  Lightbulb,
 } from 'lucide-react';
 import type { ChemicalElement } from '../types/element';
 import type { CompoundLookupResult } from '../types/compound';
@@ -191,7 +192,10 @@ export const CompoundExplorer: React.FC<CompoundExplorerProps> = ({
                 {result.compounds && result.compounds.length > 1 && (
                   <div className="bg-slate-950/90 border border-slate-750 rounded-xl p-3 space-y-2 shadow-inner">
                     <div className="text-xs text-amber-300 font-bold flex items-center justify-between">
-                      <span>💡 ამ ელემენტებისგან შესაძლებელია {result.compounds.length} ნაერთის მიღება:</span>
+                      <span className="flex items-center gap-1.5">
+                        <Lightbulb className="w-4 h-4 text-amber-400 shrink-0" />
+                        <span>ამ ელემენტებისგან შესაძლებელია {result.compounds.length} ნაერთის მიღება:</span>
+                      </span>
                       <span className="text-[11px] text-slate-400 font-normal">აირჩიეთ ნაერთი სანახავად</span>
                     </div>
                     <div className="flex flex-wrap gap-1.5">
@@ -245,7 +249,7 @@ export const CompoundExplorer: React.FC<CompoundExplorerProps> = ({
                       <div className="flex items-center gap-2 p-2.5 rounded-lg bg-amber-500/15 border border-amber-500/40 text-amber-200 text-xs font-medium">
                         <ArrowDownCircle className="w-4 h-4 text-amber-400 shrink-0" />
                         <div>
-                          <strong className="text-amber-300 mr-1.5">ნალექი (⬇️):</strong>
+                          <strong className="text-amber-300 mr-1.5">ნალექი:</strong>
                           {currentCompound.precipitate.colorAndForm}
                         </div>
                       </div>
@@ -256,7 +260,7 @@ export const CompoundExplorer: React.FC<CompoundExplorerProps> = ({
                       <div className="flex items-center gap-2 p-2.5 rounded-lg bg-sky-500/15 border border-sky-500/40 text-sky-200 text-xs font-medium">
                         <ArrowUpCircle className="w-4 h-4 text-sky-400 shrink-0" />
                         <div>
-                          <strong className="text-sky-300 mr-1.5">აირის გამოყოფა (⬆️):</strong>
+                          <strong className="text-sky-300 mr-1.5">აირის გამოყოფა:</strong>
                           {currentCompound.gasRelease.gasType}
                         </div>
                       </div>
@@ -268,7 +272,7 @@ export const CompoundExplorer: React.FC<CompoundExplorerProps> = ({
                         <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
                         <div>
                           <strong className="text-rose-300 block font-bold text-xs uppercase mb-0.5">
-                            ⚠️ მარილარწარმომქმნელი (ინდიფერენტული) ოქსიდი!
+                            მარილარწარმომქმნელი (ინდიფერენტული) ოქსიდი!
                           </strong>
                           <span>{currentCompound.nonSaltFormingOxide.explanation}</span>
                         </div>
@@ -359,8 +363,9 @@ export const CompoundExplorer: React.FC<CompoundExplorerProps> = ({
                   </h3>
 
                   {result.reasonWhyNoReaction && (
-                    <div className="inline-block px-3 py-1 bg-rose-900/60 border border-rose-700/80 rounded-lg text-rose-200 font-semibold text-xs my-2">
-                      {result.reasonWhyNoReaction}
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-rose-900/60 border border-rose-700/80 rounded-lg text-rose-200 font-semibold text-xs my-2">
+                      <AlertCircle className="w-3.5 h-3.5 text-rose-400 shrink-0" />
+                      <span>{result.reasonWhyNoReaction}</span>
                     </div>
                   )}
 
@@ -393,8 +398,11 @@ export const CompoundExplorer: React.FC<CompoundExplorerProps> = ({
                   )}
                 </div>
 
-                <div className="p-3.5 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs text-sky-200 leading-relaxed">
-                  💡 <strong>რჩევა:</strong> სცადეთ წყალბადის (H), ნახშირბადის (C) და ჟანგბადის (O) შერევა ნახშირმჟავას ან სპირტის სანახავად, ან კალციუმის (Ca), ნახშირბადის (C) და ჟანგბადის (O) შერევა კირქვის (CaCO₃) ნალექის მისაღებად!
+                <div className="p-3.5 rounded-xl bg-sky-500/10 border border-sky-500/20 text-xs text-sky-200 leading-relaxed flex items-start gap-2">
+                  <Lightbulb className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+                  <div>
+                    <strong>რჩევა:</strong> სცადეთ წყალბადის (H), ნახშირბადის (C) და ჟანგბადის (O) შერევა ნახშირმჟავას ან სპირტის სანახავად, ან კალციუმის (Ca), ნახშირბადის (C) და ჟანგბადის (O) შერევა კირქვის (CaCO₃) ნალექის მისაღებად!
+                  </div>
                 </div>
               </div>
             )}

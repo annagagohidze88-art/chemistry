@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import type { ParticleCounts } from '../../types/atomic3d';
 import { ATOM_CHALLENGES } from '../../utils/nuclearPhysics';
-import { Trophy, CheckCircle2, ChevronRight, HelpCircle, Sparkles, X } from 'lucide-react';
+import { Trophy, CheckCircle2, ChevronRight, HelpCircle, Sparkles, X, Flame, Lightbulb, GraduationCap } from 'lucide-react';
 
 interface ChallengeDrawerProps {
   currentCounts: ParticleCounts;
@@ -77,7 +77,10 @@ export const ChallengeDrawer: React.FC<ChallengeDrawerProps> = ({
           <div className="flex items-center gap-2 text-xs font-mono">
             <span className="text-amber-400 font-bold">ქულა: {score}</span>
             <span className="text-slate-600">•</span>
-            <span className="text-emerald-400 font-bold">სერია: {streak}🔥</span>
+            <span className="text-emerald-400 font-bold flex items-center gap-1">
+              <span>სერია: {streak}</span>
+              <Flame className="w-3.5 h-3.5 text-amber-400" />
+            </span>
           </div>
           <button
             type="button"
@@ -154,8 +157,11 @@ export const ChallengeDrawer: React.FC<ChallengeDrawerProps> = ({
 
         {/* Hint Box */}
         {showHint && (
-          <div className="bg-sky-500/10 border border-sky-500/30 rounded-lg p-3 text-xs text-sky-200 animate-fadeIn">
-            💡 <strong>მინიშნება:</strong> {activeChallenge.hintKa}
+          <div className="bg-sky-500/10 border border-sky-500/30 rounded-lg p-3 text-xs text-sky-200 animate-fadeIn flex items-start gap-2">
+            <Lightbulb className="w-4 h-4 text-sky-400 shrink-0 mt-0.5" />
+            <div>
+              <strong>მინიშნება:</strong> {activeChallenge.hintKa}
+            </div>
           </div>
         )}
 
@@ -166,8 +172,11 @@ export const ChallengeDrawer: React.FC<ChallengeDrawerProps> = ({
               <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               <span>სწორია! თქვენ წარმატებით შექმენით {activeChallenge.targetNameKa}!</span>
             </div>
-            <p className="text-xs text-emerald-300/90 leading-relaxed">
-              🎓 <strong>საინტერესო ფაქტი:</strong> {activeChallenge.factKa}
+            <p className="text-xs text-emerald-300/90 leading-relaxed flex items-start gap-1.5">
+              <GraduationCap className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <span>
+                <strong>საინტერესო ფაქტი:</strong> {activeChallenge.factKa}
+              </span>
             </p>
           </div>
         )}

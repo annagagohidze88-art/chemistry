@@ -1,4 +1,5 @@
 import React from 'react';
+import { X } from 'lucide-react';
 import type { ElementCategory } from '../types/element';
 import { CATEGORIES } from '../data/categories';
 
@@ -25,9 +26,10 @@ export const Legend: React.FC<LegendProps> = ({
         {selectedCategory !== 'all' && (
           <button
             onClick={() => onSelectCategory('all')}
-            className="text-xs text-sky-400 hover:text-sky-300 transition-colors font-semibold cursor-pointer px-2 py-0.5 rounded-md hover:bg-sky-500/10"
+            className="text-xs text-sky-400 hover:text-sky-300 transition-colors font-semibold cursor-pointer px-2 py-0.5 rounded-md hover:bg-sky-500/10 inline-flex items-center gap-1"
           >
-            ფილტრის მოხსნა ✕
+            <span>ფილტრის მოხსნა</span>
+            <X className="w-3.5 h-3.5" />
           </button>
         )}
       </div>

@@ -1,7 +1,18 @@
 import React, { useState, useMemo } from 'react';
 import { ELEMENTS } from '../../data/elements';
 import type { ChemicalElement } from '../../types/element';
-import { Trophy, HelpCircle, CheckCircle2, ArrowUp, ArrowDown } from 'lucide-react';
+import {
+  Trophy,
+  HelpCircle,
+  CheckCircle2,
+  ArrowUp,
+  ArrowDown,
+  ArrowRight,
+  Wind,
+  Droplets,
+  Box,
+  Unlock,
+} from 'lucide-react';
 
 export const ElementGuesserGame: React.FC = () => {
   // Secret element
@@ -18,8 +29,29 @@ export const ElementGuesserGame: React.FC = () => {
   const [score, setScore] = useState(100);
   const [wins, setWins] = useState(0);
 
-  const clues = useMemo(() => [
-    { id: 1, title: 'აგრეგატული მდგომარეობა (20 °C)', value: targetElement.phase === 'gas' ? 'აირი 💨' : targetElement.phase === 'liquid' ? 'სითხე 💧' : 'მყარი 🧱', cost: 0 },
+  const clues: { id: number; title: string; value: React.ReactNode; cost: number }[] = useMemo(() => [
+    {
+      id: 1,
+      title: 'აგრეგატული მდგომარეობა (20 °C)',
+      value:
+        targetElement.phase === 'gas' ? (
+          <span className="inline-flex items-center gap-1.5 text-sky-300">
+            <Wind className="w-4 h-4 text-sky-400" />
+            <span>აირი (აირადი)</span>
+          </span>
+        ) : targetElement.phase === 'liquid' ? (
+          <span className="inline-flex items-center gap-1.5 text-cyan-300">
+            <Droplets className="w-4 h-4 text-cyan-400" />
+            <span>სითხე (თხევადი)</span>
+          </span>
+        ) : (
+          <span className="inline-flex items-center gap-1.5 text-amber-300">
+            <Box className="w-4 h-4 text-amber-400" />
+            <span>მყარი ნივთიერება</span>
+          </span>
+        ),
+      cost: 0,
+    },
     { id: 2, title: 'ქიმიური ოჯახი', value: targetElement.category, cost: 0 },
     { id: 3, title: 'პერიოდი და ბლოკი', value: `პერიოდი ${targetElement.period}, ${targetElement.block}-ბლოკი`, cost: 15 },
     { id: 4, title: 'ვალენტობა და ელექტროუარყოფითობა', value: `ვალენტობა: ${targetElement.valency} | ელექტროუარყოფითობა: ${targetElement.electronegativity ?? '—'}`, cost: 20 },
@@ -140,9 +172,10 @@ export const ElementGuesserGame: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => handleUnlockClue(clue.id, clue.cost)}
-                    className="w-full mt-1 py-1 rounded-lg bg-slate-850 hover:bg-slate-800 text-slate-300 text-xs font-semibold border border-slate-700 transition-colors cursor-pointer"
+                    className="w-full mt-1 py-1 rounded-lg bg-slate-850 hover:bg-slate-800 text-slate-300 text-xs font-semibold border border-slate-700 transition-colors cursor-pointer flex items-center justify-center gap-1.5"
                   >
-                    🔓 მინიშნების გახსნა
+                    <Unlock className="w-3.5 h-3.5 text-slate-400" />
+                    <span>მინიშნების გახსნა</span>
                   </button>
                 )}
               </div>
@@ -186,9 +219,10 @@ export const ElementGuesserGame: React.FC = () => {
             <button
               type="button"
               onClick={handleRestart}
-              className="px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg"
+              className="px-6 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs uppercase tracking-wider transition-all cursor-pointer shadow-lg inline-flex items-center gap-2"
             >
-              შემდეგი ელემენტი ➔
+              <span>შემდეგი ელემენტი</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         )}
@@ -214,8 +248,9 @@ export const ElementGuesserGame: React.FC = () => {
 
                 <div>
                   {g.direction === 'correct' ? (
-                    <span className="text-emerald-400 font-bold flex items-center gap-1">
-                      <span>სწორია!</span> ✓
+                    <span className="text-emerald-400 font-bold flex items-center gap-1.5">
+                      <span>სწორია!</span>
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                     </span>
                   ) : g.direction === 'higher' ? (
                     <span className="text-amber-400 font-bold flex items-center gap-1">

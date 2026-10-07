@@ -2,6 +2,7 @@ import React from 'react';
 import type { ChemicalElement, ElementCategory, ElementPhase } from '../types/element';
 import { ROMAN_PERIODS } from '../types/element';
 import { ElementTile } from './ElementTile';
+import { ElementHoverCard } from './ElementHoverCard';
 import { matchesFilters } from '../utils/selection';
 
 interface PeriodicTableProps {
@@ -23,6 +24,11 @@ export const PeriodicTable: React.FC<PeriodicTableProps> = ({
   searchQuery,
   onElementClick,
 }) => {
+  const [hoveredElement, setHoveredElement] = React.useState<{
+    element: ChemicalElement;
+    pos: { x: number; y: number };
+  } | null>(null);
+
   // Elements lookup map by atomic number
   const elementMap = React.useMemo(() => {
     const map = new Map<number, ChemicalElement>();
@@ -64,6 +70,13 @@ export const PeriodicTable: React.FC<PeriodicTableProps> = ({
         isDimmed={isDimmed}
         isHighlighted={isHighlighted}
         onClick={onElementClick}
+        onHover={(hoveredEl, pos) => {
+          if (hoveredEl && pos) {
+            setHoveredElement({ element: hoveredEl, pos });
+          } else {
+            setHoveredElement(null);
+          }
+        }}
       />
     );
   };
@@ -249,6 +262,15 @@ export const PeriodicTable: React.FC<PeriodicTableProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Floating Hover Inspection Card matching Screenshot 2 */}
+      {hoveredElement && (
+        <ElementHoverCard
+          element={hoveredElement.element}
+          position={hoveredElement.pos}
+        />
+      )}
     </div>
   );
 };
+

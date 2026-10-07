@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Atom, Info, FlaskConical, LayoutGrid, TableProperties, Calculator, Gamepad2 } from 'lucide-react';
+import { Atom, Info, FlaskConical, LayoutGrid, TableProperties, Calculator, Gamepad2, Pin } from 'lucide-react';
 import { ELEMENTS } from './data/elements';
 import type { ChemicalElement, ElementCategory, ElementPhase } from './types/element';
 import { PeriodicTable } from './components/PeriodicTable';
@@ -12,6 +12,7 @@ import { Instructions } from './components/Instructions';
 import { AtomicLab3D } from './components/AtomicLab3D/AtomicLab3D';
 import { ChemistryTools } from './components/Tools/ChemistryTools';
 import { ChemistryGames } from './components/Games/ChemistryGames';
+import { AnimatedAtomLogo } from './components/AnimatedAtomLogo';
 import { countByCategory, toggleElementInSelection } from './utils/selection';
 
 type Mode = 'info' | 'compound';
@@ -72,27 +73,26 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col justify-between">
+    <div className="min-h-screen bg-[#070b11] text-slate-100 flex flex-col justify-between">
       {/* Screen reader live region */}
       <div className="sr-only" aria-live="polite" role="status">
         {announcement}
       </div>
 
-      <header className="border-b border-slate-800 bg-slate-950/95 backdrop-blur-md sticky top-0 z-30 shadow-md">
-        <div className="max-w-[1480px] mx-auto px-3 md:px-6 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-red-500 via-amber-500 to-blue-600 flex items-center justify-center shadow-lg shadow-amber-500/20">
-              <Atom className="w-6 h-6 text-white" aria-hidden="true" />
-            </div>
-            <div>
-              <h1 className="text-base sm:text-lg md:text-xl font-black tracking-tight text-white flex items-center gap-2">
-                ქიმიურ ელემენტთა პერიოდული სისტემა
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30 font-mono">
-                  I–VIII ჯგუფები
+      <header className="border-b border-slate-800/80 bg-[#070b11]/95 backdrop-blur-md sticky top-0 z-30 shadow-2xl">
+        <div className="max-w-[1480px] mx-auto px-3 md:px-6 py-2.5 flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+          <div className="flex items-center gap-4">
+            <AnimatedAtomLogo size="md" showText={true} />
+            <div className="hidden sm:block h-8 w-px bg-slate-800" />
+            <div className="hidden sm:block">
+              <h1 className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                <span>ქიმიურ ელემენტთა სისტემა</span>
+                <span className="text-[10px] px-2 py-0.2 rounded-full bg-cyan-500/10 text-cyan-300 font-semibold border border-cyan-500/30 font-mono">
+                  I–VIII & 1–18
                 </span>
               </h1>
-              <p className="text-xs text-slate-400">
-                სასკოლო მოკლეპერიოდიანი ფორმა • რომაული ჯგუფები (I–VIII) • რეალური ფოტოები • მრავალკომპონენტიანი ლაბორატორია
+              <p className="text-[11px] text-slate-400 font-mono mt-0.5">
+                ქართული სასკოლო და IUPAC სტანდარტი
               </p>
             </div>
           </div>
@@ -252,6 +252,8 @@ function App() {
             )}
           </div>
         </div>
+        {/* Glowing Top Accent Line matching Screenshot 2 */}
+        <div className="h-[2px] w-full bg-gradient-to-r from-cyan-400 via-sky-400 to-indigo-500 shadow-[0_0_12px_rgba(56,189,248,0.7)]" />
       </header>
 
       <main className="max-w-[1480px] mx-auto px-3 md:px-6 py-4 space-y-4 w-full flex-1">
@@ -293,8 +295,11 @@ function App() {
 
             {mode === 'compound' && (
               <div className="flex items-center justify-between text-xs text-emerald-300 bg-emerald-500/15 border border-emerald-500/40 rounded-xl px-4 py-2.5 shadow-sm">
-                <span>
-                  🧪 <strong>შერევის რეჟიმი აქტიურია:</strong> დააწკაპუნეთ ელემენტებს ცხრილში მათ დასამატებლად ან მოსახსნელად (შეგიძლიათ აირჩიოთ 2, 3, 4 ან მეტი ელემენტი).
+                <span className="flex items-center gap-2">
+                  <FlaskConical className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>
+                    <strong>შერევის რეჟიმი აქტიურია:</strong> დააწკაპუნეთ ელემენტებს ცხრილში მათ დასამატებლად ან მოსახსნელად (შეგიძლიათ აირჩიოთ 2, 3, 4 ან მეტი ელემენტი).
+                  </span>
                 </span>
                 <span className="font-mono font-bold text-emerald-200">
                   არჩეულია: {selectedElements.length}
@@ -309,7 +314,7 @@ function App() {
             >
               <div className="flex items-center justify-between text-[11px] text-slate-400 mb-2 px-1">
                 <span className="font-mono text-amber-400 font-semibold flex items-center gap-1.5">
-                  <span>📌</span>
+                  <Pin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
                   <span>
                     {tableView === 'short'
                       ? 'მოკლეპერიოდიანი ფორმა: ჯგუფები რომაულად ზემოთ (I–VIII), პერიოდები 1–7 მარცხნივ, ტრიადები VIII ჯგუფში'

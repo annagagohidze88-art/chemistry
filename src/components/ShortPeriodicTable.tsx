@@ -1,6 +1,7 @@
 import React from 'react';
 import type { ChemicalElement, ElementCategory, ElementPhase } from '../types/element';
 import { ShortElementTile } from './ShortElementTile';
+import { ElementHoverCard } from './ElementHoverCard';
 import { matchesFilters } from '../utils/selection';
 
 interface ShortPeriodicTableProps {
@@ -22,6 +23,11 @@ export const ShortPeriodicTable: React.FC<ShortPeriodicTableProps> = ({
   searchQuery,
   onElementClick,
 }) => {
+  const [hoveredElement, setHoveredElement] = React.useState<{
+    element: ChemicalElement;
+    pos: { x: number; y: number };
+  } | null>(null);
+
   // Elements lookup map by atomic number
   const elementMap = React.useMemo(() => {
     const map = new Map<number, ChemicalElement>();
@@ -64,6 +70,13 @@ export const ShortPeriodicTable: React.FC<ShortPeriodicTableProps> = ({
         isHighlighted={isHighlighted}
         isGhostH={isGhostH}
         onClick={onElementClick}
+        onHover={(hoveredEl, pos) => {
+          if (hoveredEl && pos) {
+            setHoveredElement({ element: hoveredEl, pos });
+          } else {
+            setHoveredElement(null);
+          }
+        }}
       />
     );
   };
@@ -388,6 +401,15 @@ export const ShortPeriodicTable: React.FC<ShortPeriodicTableProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Floating Hover Inspection Card matching Screenshot 2 */}
+      {hoveredElement && (
+        <ElementHoverCard
+          element={hoveredElement.element}
+          position={hoveredElement.pos}
+        />
+      )}
     </div>
   );
 };
+

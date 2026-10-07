@@ -65,7 +65,7 @@ export function getCompoundForElements(
       elements: symbols,
       educationalExplanationKa: `შერჩეულ ელემენტებს შორის არის კეთილშობილი (ინერტული) აირი: ${nobleNames}. ინერტულ აირებს აქვთ სრულად დასრულებული გარე ელექტრონული შრე (ოქტეტი), ამიტომ ისინი ამ კომბინაციაში ქიმიურ ნაერთს არ წარმოქმნიან.`,
       canReactUnderConditions: false,
-      reasonWhyNoReaction: '🚫 ინერტული აირის სტაბილური ელექტრონული გარსი ეწინააღმდეგება ქიმიური ბმის წარმოქმნას.',
+      reasonWhyNoReaction: 'ინერტული აირის სტაბილური ელექტრონული გარსი ეწინააღმდეგება ქიმიური ბმის წარმოქმნას.',
     };
   }
 
@@ -77,7 +77,7 @@ export function getCompoundForElements(
       elements: symbols,
       educationalExplanationKa: `ყველა არჩეული ელემენტი (${metalNames}) ლითონია. ლითონები ერთმანეთთან არ წარმოქმნიან კლასიკურ ვალენტურ ნაერთებს (მჟავებს, მარილებს ან ოქსიდებს); შერევისას და გალღობისას ისინი ქმნიან ლითონურ შენადნობებს (მყარ ხსნარებს ან ინტერმეტალიდებს).`,
       canReactUnderConditions: false,
-      reasonWhyNoReaction: '🚫 მხოლოდ ლითონების კომბინაცია ქიმიური ნაერთის ნაცვლად წარმოქმნის ფიზიკურ შენადნობს.',
+      reasonWhyNoReaction: 'მხოლოდ ლითონების კომბინაცია ქიმიური ნაერთის ნაცვლად წარმოქმნის ფიზიკურ შენადნობს.',
       suggestedElements: ['O (ჟანგბადი)', 'Cl (ქლორი)', 'S (გოგირდი)'],
     };
   }
@@ -90,7 +90,7 @@ export function getCompoundForElements(
       elements: symbols,
       educationalExplanationKa: `არჩეული ელემენტებიდან ${shNames} მიეკუთვნება სუპერმძიმე სინთეზურ ელემენტებს (Z > 100), რომლებიც წამების უმცირეს ნაწილში იშლება. მათი რეაქციის პროდუქტის ექსპერიმენტული მონაცემები მეცნიერებაში არ არსებობს.`,
       canReactUnderConditions: false,
-      reasonWhyNoReaction: '🚫 სუპერმძიმე ელემენტის ექსტრემალურად ხანმოკლე სიცოცხლე და ექსპერიმენტული მონაცემების არარსებობა.',
+      reasonWhyNoReaction: 'სუპერმძიმე ელემენტის ექსტრემალურად ხანმოკლე სიცოცხლე და ექსპერიმენტული მონაცემების არარსებობა.',
     };
   }
 
@@ -119,7 +119,7 @@ export function getCompoundForElements(
     elements: symbols,
     educationalExplanationKa: `არჩეული ელემენტების (${symbols.join(' + ')}) პირდაპირი შერევით გავრცელებული სტაბილური ნაერთის მიღება დაუდასტურებელია ან მოითხოვს სხვა რეაგენტების მონაწილეობას.`,
     canReactUnderConditions: false,
-    reasonWhyNoReaction: '🚫 ამ ელემენტებს შორის სტაბილური ნაერთის წარმოქმნა პირდაპირი შერევით შეუძლებელია.',
+    reasonWhyNoReaction: 'ამ ელემენტებს შორის სტაბილური ნაერთის წარმოქმნა პირდაპირი შერევით შეუძლებელია.',
     suggestedElements: suggestions.length > 0 ? suggestions : undefined,
   };
 }

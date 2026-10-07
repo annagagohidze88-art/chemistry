@@ -748,8 +748,12 @@ export const AtomScene3D: React.FC<AtomScene3DProps> = ({
         </div>
 
         {/* Interaction Hint */}
-        <div className="text-[10px] font-mono text-slate-400 bg-slate-950/80 backdrop-blur-md border border-slate-850 px-2.5 py-1 rounded-lg">
-          🖱️ დაატრიალეთ მაუსით • 🔍 გაადიდეთ სქროლით
+        <div className="text-[10px] font-mono text-slate-400 bg-slate-950/80 backdrop-blur-md border border-slate-850 px-2.5 py-1 rounded-lg flex items-center gap-2">
+          <RotateCw className="w-3 h-3 text-cyan-400" />
+          <span>დაატრიალეთ მაუსით</span>
+          <span className="text-slate-600">•</span>
+          <ZoomIn className="w-3 h-3 text-cyan-400" />
+          <span>გაადიდეთ სქროლით</span>
         </div>
       </div>
     </div>

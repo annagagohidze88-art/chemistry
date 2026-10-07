@@ -27,6 +27,7 @@ import {
   Pause,
   Plus,
   Minus,
+  Timer,
 } from 'lucide-react';
 
 interface AtomicLab3DProps {
@@ -615,8 +616,9 @@ export const AtomicLab3D: React.FC<AtomicLab3DProps> = ({
             </p>
 
             {stability.halfLifeHintKa && (
-              <div className="text-[11px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg">
-                ⏱️ ნახევრადდაშლის პერიოდი: {stability.halfLifeHintKa}
+              <div className="text-[11px] font-mono text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-lg flex items-center gap-1.5">
+                <Timer className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span>ნახევრადდაშლის პერიოდი: {stability.halfLifeHintKa}</span>
               </div>
             )}
           </div>

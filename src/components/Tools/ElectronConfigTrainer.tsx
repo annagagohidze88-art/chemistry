@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { ELEMENTS } from '../../data/elements';
 import type { ChemicalElement } from '../../types/element';
-import { Atom, Sparkles, BookOpen } from 'lucide-react';
+import { Atom, Sparkles, BookOpen, AlertTriangle } from 'lucide-react';
 
 interface SubshellDef {
   name: string;
@@ -179,7 +179,10 @@ export const ElectronConfigTrainer: React.FC = () => {
         {/* Special Notes (e.g. for Chromium or Copper) */}
         {(selectedZ === 24 || selectedZ === 29) && (
           <div className="p-3 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-200 text-xs max-w-sm">
-            <strong className="block text-amber-300 mb-0.5">⚠️ ელექტრონული „ჩავარდნა“ (პრომოცია):</strong>
+            <strong className="flex items-center gap-1.5 text-amber-300 mb-1 font-bold">
+              <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>ელექტრონული „ჩავარდნა“ (პრომოცია):</span>
+            </strong>
             <span>
               {selectedZ === 24
                 ? 'ქრომში (Cr) ერთი ელექტრონი 4s-დან გადადის 3d-ზე, რადგან ნახევრად შევსებული d⁵ ქვედონე ენერგეტიკულად უფრო მდგრადია ([Ar] 4s¹ 3d⁵).'
