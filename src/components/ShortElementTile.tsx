@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import type { ChemicalElement } from '../types/element';
-import { ReticleCorners } from '../styles/designSystem';
+import { ReticleCorners } from './ReticleCorners';
 
 interface ShortElementTileProps {
   element: ChemicalElement;

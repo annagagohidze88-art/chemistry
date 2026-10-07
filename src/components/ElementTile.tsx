@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import type { ChemicalElement } from '../types/element';
-import { ATOMIC_DESIGN, ReticleCorners } from '../styles/designSystem';
+import { ATOMIC_DESIGN } from '../styles/designSystem';
+import { ReticleCorners } from './ReticleCorners';
 
 interface ElementTileProps {
   element: ChemicalElement;

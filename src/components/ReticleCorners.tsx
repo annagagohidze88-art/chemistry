@@ -9,72 +9,68 @@ export interface ReticleCornersProps {
 }
 
 /**
- * Corner bracket reticle marker [ ]
- * Displays on hovered or active element tiles, exactly matching atomic-lab.net
+ * Reticle Corner Brackets Component ([ ] selector marker)
+ * Matches Screenshot 2 HUD selection reticle on active/hovered elements.
  */
 export const ReticleCorners: React.FC<ReticleCornersProps> = ({
   color = '#38bdf8',
-  size = 6,
+  size = 7,
   thickness = 1.8,
   offset = -2,
   className = '',
 }) => {
+  const cornerStyle: React.CSSProperties = {
+    position: 'absolute',
+    width: size,
+    height: size,
+    pointerEvents: 'none',
+    boxShadow: `0 0 6px ${color}, 0 0 12px rgba(56, 189, 248, 0.4)`,
+    transition: 'all 0.15s ease-out',
+  };
+
   return (
-    <div className={`pointer-events-none absolute inset-0 z-30 transition-opacity duration-150 ${className}`}>
-      {/* Top-Left Corner */}
+    <div
+      className={`absolute inset-0 pointer-events-none z-30 ${className}`}
+      aria-hidden="true"
+    >
+      {/* Top-left ┌ */}
       <span
         style={{
-          position: 'absolute',
+          ...cornerStyle,
           top: offset,
           left: offset,
-          width: size,
-          height: size,
-          borderColor: color,
-          borderTopWidth: thickness,
-          borderLeftWidth: thickness,
-          borderStyle: 'solid',
+          borderTop: `${thickness}px solid ${color}`,
+          borderLeft: `${thickness}px solid ${color}`,
         }}
       />
-      {/* Top-Right Corner */}
+      {/* Top-right ┐ */}
       <span
         style={{
-          position: 'absolute',
+          ...cornerStyle,
           top: offset,
           right: offset,
-          width: size,
-          height: size,
-          borderColor: color,
-          borderTopWidth: thickness,
-          borderRightWidth: thickness,
-          borderStyle: 'solid',
+          borderTop: `${thickness}px solid ${color}`,
+          borderRight: `${thickness}px solid ${color}`,
         }}
       />
-      {/* Bottom-Left Corner */}
+      {/* Bottom-left └ */}
       <span
         style={{
-          position: 'absolute',
+          ...cornerStyle,
           bottom: offset,
           left: offset,
-          width: size,
-          height: size,
-          borderColor: color,
-          borderBottomWidth: thickness,
-          borderLeftWidth: thickness,
-          borderStyle: 'solid',
+          borderBottom: `${thickness}px solid ${color}`,
+          borderLeft: `${thickness}px solid ${color}`,
         }}
       />
-      {/* Bottom-Right Corner */}
+      {/* Bottom-right ┘ */}
       <span
         style={{
-          position: 'absolute',
+          ...cornerStyle,
           bottom: offset,
           right: offset,
-          width: size,
-          height: size,
-          borderColor: color,
-          borderBottomWidth: thickness,
-          borderRightWidth: thickness,
-          borderStyle: 'solid',
+          borderBottom: `${thickness}px solid ${color}`,
+          borderRight: `${thickness}px solid ${color}`,
         }}
       />
     </div>
