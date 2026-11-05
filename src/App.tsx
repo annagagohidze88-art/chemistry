@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Atom, Info, FlaskConical, LayoutGrid, TableProperties, Calculator, Gamepad2, Pin, Waves, Flame, Sparkles } from 'lucide-react';
+import { Atom, Info, FlaskConical, LayoutGrid, TableProperties, Calculator, Gamepad2, Pin, Waves, Flame, Sparkles, Zap } from 'lucide-react';
 import { ELEMENTS } from './data/elements';
 import type { ChemicalElement, ElementCategory, ElementPhase } from './types/element';
 import { PeriodicTable } from './components/PeriodicTable';
@@ -333,13 +333,24 @@ function App() {
                 <button
                   type="button"
                   onClick={() => {
+                    setToolsSubTab('activity');
+                    setActiveTab('tools');
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 border border-amber-500/40 text-amber-300 hover:bg-amber-500/25 font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                >
+                  <Zap className="w-3.5 h-3.5" />
+                  <span>2. მეტალთა აქტიურობის მწკრივი</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
                     setToolsSubTab('oxides');
                     setActiveTab('tools');
                   }}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 hover:bg-rose-500/25 font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
                 >
                   <Flame className="w-3.5 h-3.5" />
-                  <span>2. ოქსიდები & შესაბამისი მჟავები</span>
+                  <span>3. ოქსიდები & შესაბამისი მჟავები</span>
                 </button>
               </div>
             </div>

@@ -6,7 +6,9 @@ import {
   type SolubilityCell,
   type SolubilityState,
 } from '../../data/solubilityData';
-import { Waves, Search, X, Info, Sparkles, Filter } from 'lucide-react';
+import { METAL_ACTIVITY_SERIES } from '../../data/metalActivityData';
+import { MetalActivitySeries } from './MetalActivitySeries';
+import { Waves, Search, X, Info, Sparkles, Filter, Zap, ChevronDown, ChevronUp, ArrowLeft, ArrowRight } from 'lucide-react';
 
 export const SolubilityTable: React.FC = () => {
   const [selectedCell, setSelectedCell] = useState<{
@@ -17,6 +19,7 @@ export const SolubilityTable: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState('');
   const [filterState, setFilterState] = useState<SolubilityState | 'all'>('all');
+  const [showFullActivitySeries, setShowFullActivitySeries] = useState(false);
 
   const filteredCations = useMemo(() => {
     if (!searchQuery.trim()) return CATIONS;
@@ -130,6 +133,94 @@ export const SolubilityTable: React.FC = () => {
             <span>იშლება / არ არსებობს</span>
           </div>
         </div>
+      </div>
+
+      {/* Integrated Metal Activity Ribbon */}
+      <div className="p-3.5 sm:p-4 rounded-2xl bg-slate-950/90 border border-slate-800 space-y-2.5 shadow-md">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2">
+            <div className="w-7 h-7 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold shrink-0">
+              <Zap className="w-4 h-4" />
+            </div>
+            <div>
+              <span className="text-xs font-bold text-white flex flex-wrap items-center gap-2">
+                <span>მეტალთა აქტიურობის მწკრივი (ბეკეტოვის ელექტროქიმიური ძაბვის მწკრივი):</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30">
+                  Li → Au
+                </span>
+              </span>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setShowFullActivitySeries(prev => !prev)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/35 text-amber-300 text-xs font-bold transition-all cursor-pointer self-start sm:self-auto"
+          >
+            <Zap className="w-3.5 h-3.5 text-amber-400" />
+            <span>{showFullActivitySeries ? 'სიმულატორის ჩაკეცვა' : 'სრული სიმულატორი & წესები'}</span>
+            {showFullActivitySeries ? (
+              <ChevronUp className="w-3.5 h-3.5" />
+            ) : (
+              <ChevronDown className="w-3.5 h-3.5" />
+            )}
+          </button>
+        </div>
+
+        {/* Scrollable Ribbon */}
+        <div className="overflow-x-auto pb-2 custom-scrollbar">
+          <div className="flex items-center gap-1.5 min-w-max py-1 px-0.5 text-xs font-mono">
+            {METAL_ACTIVITY_SERIES.map((metal, idx) => {
+              const isH = metal.symbol === 'H₂';
+              const isAct = metal.group === 'active';
+              const isMed = metal.group === 'medium';
+
+              return (
+                <React.Fragment key={metal.symbol}>
+                  <div
+                    title={`${metal.nameKa} (${metal.symbol}) · E° = ${metal.potential} V`}
+                    className={`px-2.5 py-1.5 rounded-xl border flex flex-col items-center justify-center min-w-[50px] transition-all ${
+                      isH
+                        ? 'bg-sky-500/25 border-sky-400 text-sky-200 ring-1 ring-sky-400 font-black'
+                        : isAct
+                        ? 'bg-rose-500/15 border-rose-500/40 text-rose-300'
+                        : isMed
+                        ? 'bg-amber-500/15 border-amber-500/40 text-amber-300'
+                        : 'bg-indigo-500/15 border-indigo-500/40 text-indigo-300'
+                    }`}
+                  >
+                    <span className="text-sm font-black tracking-tight">{metal.symbol}</span>
+                    <span className="text-[9px] font-sans text-slate-300 truncate max-w-[48px]">
+                      {metal.nameKa}
+                    </span>
+                  </div>
+                  {idx < METAL_ACTIVITY_SERIES.length - 1 && (
+                    <span className="text-slate-600 font-bold text-[10px]">→</span>
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Guidance Directions */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[10px] text-slate-400 pt-1 border-t border-slate-900">
+          <div className="flex items-center gap-1.5 text-rose-300">
+            <ArrowLeft className="w-3 h-3 text-rose-400" />
+            <span>აღმდგენითი უნარი ძლიერდება (ადვილად გასცემს e⁻)</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-indigo-300">
+            <span>იონების დამჟანგველი უნარი ძლიერდება (ადვილად იერთებს e⁻)</span>
+            <ArrowRight className="w-3 h-3 text-indigo-400" />
+          </div>
+        </div>
+
+        {/* Expandable Full Metal Activity Series Simulator & Inspector */}
+        {showFullActivitySeries && (
+          <div className="pt-3 border-t border-slate-800 animate-fadeIn">
+            <MetalActivitySeries />
+          </div>
+        )}
       </div>
 
       {/* Filter and Search Bar */}

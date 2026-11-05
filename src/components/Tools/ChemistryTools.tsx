@@ -4,17 +4,33 @@ import { EquationBalancer } from './EquationBalancer';
 import { ElectronConfigTrainer } from './ElectronConfigTrainer';
 import { ElementComparator } from './ElementComparator';
 import { SolubilityTable } from './SolubilityTable';
+import { MetalActivitySeries } from './MetalActivitySeries';
 import { OxidesAcidsTable } from './OxidesAcidsTable';
-import { Scale, Equal, Atom, Columns3, Waves, Flame } from 'lucide-react';
+import { Scale, Equal, Atom, Columns3, Waves, Flame, Zap } from 'lucide-react';
 
-export type ToolTab = 'molar' | 'balancer' | 'config' | 'compare' | 'solubility' | 'oxides';
+export type ToolTab =
+  | 'solubility'
+  | 'activity'
+  | 'oxides'
+  | 'molar'
+  | 'balancer'
+  | 'config'
+  | 'compare';
 
 interface ChemistryToolsProps {
   initialTab?: ToolTab;
 }
 
-export const ChemistryTools: React.FC<ChemistryToolsProps> = ({ initialTab = 'solubility' }) => {
+export const ChemistryTools: React.FC<ChemistryToolsProps> = ({
+  initialTab = 'solubility',
+}) => {
+  const [prevInitialTab, setPrevInitialTab] = useState(initialTab);
   const [activeTool, setActiveTool] = useState<ToolTab>(initialTab);
+
+  if (initialTab !== prevInitialTab) {
+    setPrevInitialTab(initialTab);
+    setActiveTool(initialTab);
+  }
 
   return (
     <div className="space-y-4">
@@ -31,6 +47,19 @@ export const ChemistryTools: React.FC<ChemistryToolsProps> = ({ initialTab = 'so
         >
           <Waves className="w-4 h-4" />
           <span>ხსნადობის ცხრილი</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTool('activity')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
+            activeTool === 'activity'
+              ? 'bg-gradient-to-r from-amber-500 via-amber-400 to-rose-500 text-slate-950 font-black shadow-md shadow-amber-500/25'
+              : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+          }`}
+        >
+          <Zap className="w-4 h-4 text-amber-400" />
+          <span>მეტალთა აქტიურობის მწკრივი</span>
         </button>
 
         <button
@@ -102,6 +131,7 @@ export const ChemistryTools: React.FC<ChemistryToolsProps> = ({ initialTab = 'so
       {/* Active Tool View */}
       <div>
         {activeTool === 'solubility' && <SolubilityTable />}
+        {activeTool === 'activity' && <MetalActivitySeries />}
         {activeTool === 'oxides' && <OxidesAcidsTable />}
         {activeTool === 'molar' && <MolarMassCalculator />}
         {activeTool === 'balancer' && <EquationBalancer />}
