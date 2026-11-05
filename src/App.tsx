@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Atom, Info, FlaskConical, TableProperties, Calculator, Gamepad2, Pin } from 'lucide-react';
+import { Atom, Info, FlaskConical, LayoutGrid, TableProperties, Calculator, Gamepad2, Pin } from 'lucide-react';
 import { ELEMENTS } from './data/elements';
 import type { ChemicalElement, ElementCategory, ElementPhase } from './types/element';
 import { PeriodicTable } from './components/PeriodicTable';
+import { ShortPeriodicTable } from './components/ShortPeriodicTable';
 import { SearchBar } from './components/SearchBar';
 import { Legend } from './components/Legend';
 import { ElementDetails } from './components/ElementDetails';
@@ -15,10 +16,12 @@ import { AnimatedAtomLogo } from './components/AnimatedAtomLogo';
 import { countByCategory, toggleElementInSelection } from './utils/selection';
 
 type Mode = 'info' | 'compound';
+type TableView = 'long' | 'short';
 type ActiveTab = 'table' | 'atomic3d' | 'tools' | 'games';
 
 function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('table');
+  const [tableView, setTableView] = useState<TableView>('long');
   const [atomicLabElement, setAtomicLabElement] = useState<ChemicalElement | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<ElementCategory | 'all'>('all');
@@ -83,12 +86,16 @@ function App() {
             <div className="hidden sm:block">
               <h1 className="text-xs sm:text-sm font-bold text-slate-200 flex items-center gap-1.5">
                 <span>ქიმიურ ელემენტთა პერიოდული სისტემა</span>
-                <span className="text-[10px] px-2 py-0.2 rounded-full bg-cyan-500/10 text-cyan-300 font-semibold border border-cyan-500/30 font-mono">
-                  18 სვეტი
+                <span className={`text-[10px] px-2 py-0.2 rounded-full font-semibold border font-mono transition-colors ${
+                  tableView === 'long'
+                    ? 'bg-cyan-500/10 text-cyan-300 border-cyan-500/30'
+                    : 'bg-amber-500/10 text-amber-300 border-amber-500/30'
+                }`}>
+                  {tableView === 'long' ? '18 სვეტი (IUPAC)' : 'მოკლე (I–VIII)'}
                 </span>
               </h1>
               <p className="text-[11px] text-slate-400 font-mono mt-0.5">
-                თანამედროვე IUPAC სტანდარტი
+                {tableView === 'long' ? 'თანამედროვე IUPAC სტანდარტი' : 'სასკოლო მოკლეპერიოდიანი ფორმა'}
               </p>
             </div>
           </div>
@@ -168,42 +175,84 @@ function App() {
               </button>
             </div>
 
-            {/* Mode switch (when activeTab is table) */}
+            {/* Table controls (when activeTab is table) */}
             {activeTab === 'table' && (
-              <div
-                role="radiogroup"
-                aria-label="დაჭერის რეჟიმი"
-                className="flex bg-slate-900 border border-slate-800 rounded-xl p-1 text-xs shadow-inner"
-              >
-                <button
-                  type="button"
-                  role="radio"
-                  aria-checked={mode === 'info'}
-                  onClick={() => setMode('info')}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-bold cursor-pointer transition-all duration-150 ${
-                    mode === 'info'
-                      ? 'bg-sky-500 text-white shadow-md shadow-sky-500/25'
-                      : 'text-slate-300 hover:bg-slate-800'
-                  }`}
+              <>
+                {/* Table View Switcher (18-column vs Short School) */}
+                <div
+                  role="radiogroup"
+                  aria-label="ცხრილის ხედი"
+                  className="flex bg-slate-900 border border-slate-800 rounded-xl p-1 text-xs shadow-inner"
                 >
-                  <Info className="w-3.5 h-3.5" aria-hidden="true" />
-                  <span>ინფო & ფოტო</span>
-                </button>
-                <button
-                  type="button"
-                  role="radio"
-                  aria-checked={mode === 'compound'}
-                  onClick={() => setMode('compound')}
-                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-bold cursor-pointer transition-all duration-150 ${
-                    mode === 'compound'
-                      ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/25'
-                      : 'text-slate-300 hover:bg-slate-800'
-                  }`}
+                  <button
+                    type="button"
+                    role="radio"
+                    aria-checked={tableView === 'long'}
+                    onClick={() => setTableView('long')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold cursor-pointer transition-all duration-150 ${
+                      tableView === 'long'
+                        ? 'bg-sky-500 text-white shadow-md shadow-sky-500/25'
+                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    }`}
+                    title="პირველი ცხრილი: თანამედროვე 18-სვეტიანი IUPAC ცხრილი"
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>18-სვეტიანი</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    role="radio"
+                    aria-checked={tableView === 'short'}
+                    onClick={() => setTableView('short')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold cursor-pointer transition-all duration-150 ${
+                      tableView === 'short'
+                        ? 'bg-amber-500 text-slate-950 shadow-md shadow-amber-500/25'
+                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    }`}
+                    title="მეორე ცხრილი: სასკოლო მოკლეპერიოდიანი ცხრილი (I–VIII ჯგუფები)"
+                  >
+                    <TableProperties className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>სასკოლო მოკლე (I–VIII)</span>
+                  </button>
+                </div>
+
+                {/* Mode switch */}
+                <div
+                  role="radiogroup"
+                  aria-label="დაჭერის რეჟიმი"
+                  className="flex bg-slate-900 border border-slate-800 rounded-xl p-1 text-xs shadow-inner"
                 >
-                  <FlaskConical className="w-3.5 h-3.5" aria-hidden="true" />
-                  <span>შერევა ({selectedElements.length})</span>
-                </button>
-              </div>
+                  <button
+                    type="button"
+                    role="radio"
+                    aria-checked={mode === 'info'}
+                    onClick={() => setMode('info')}
+                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-bold cursor-pointer transition-all duration-150 ${
+                      mode === 'info'
+                        ? 'bg-sky-500 text-white shadow-md shadow-sky-500/25'
+                        : 'text-slate-300 hover:bg-slate-800'
+                    }`}
+                  >
+                    <Info className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>ინფო & ფოტო</span>
+                  </button>
+                  <button
+                    type="button"
+                    role="radio"
+                    aria-checked={mode === 'compound'}
+                    onClick={() => setMode('compound')}
+                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg font-bold cursor-pointer transition-all duration-150 ${
+                      mode === 'compound'
+                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/25'
+                        : 'text-slate-300 hover:bg-slate-800'
+                    }`}
+                  >
+                    <FlaskConical className="w-3.5 h-3.5" aria-hidden="true" />
+                    <span>შერევა ({selectedElements.length})</span>
+                  </button>
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -262,28 +311,71 @@ function App() {
               </div>
             )}
 
-            {/* PERIODIC TABLE DISPLAY (18-COLUMN IUPAC TABLE) */}
+            {/* PERIODIC TABLE DISPLAY (18-COLUMN IUPAC vs SHORT SCHOOL TABLE) */}
             <section
               aria-label="პერიოდული სისტემა"
               className="bg-slate-900/60 border border-slate-750/80 rounded-2xl p-2.5 md:p-3.5 shadow-2xl backdrop-blur-md"
             >
-              <div className="flex items-center justify-between text-[11px] text-slate-400 mb-2 px-1">
-                <span className="font-mono text-cyan-400 font-semibold flex items-center gap-1.5">
-                  <Pin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                  <span>18-სვეტიანი IUPAC ფორმა: პერიოდები I–VII მარცხნივ, ჯგუფები 1–18 ზემოთ</span>
-                </span>
-                <span className="md:hidden">← ცხრილი გადაასქროლეთ ჰორიზონტალურად →</span>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 text-xs mb-3 px-1 pb-2.5 border-b border-slate-800">
+                <div className="flex items-center gap-2">
+                  <Pin className={`w-3.5 h-3.5 shrink-0 ${tableView === 'long' ? 'text-cyan-400' : 'text-amber-400'}`} />
+                  <span className="font-semibold text-slate-200">
+                    {tableView === 'long'
+                      ? 'პირველი ცხრილი: თანამედროვე 18-სვეტიანი IUPAC ფორმა (პერიოდები 1–7, ჯგუფები 1–18)'
+                      : 'მეორე ცხრილი: სასკოლო მოკლეპერიოდიანი ფორმა (ჯგუფები I–VIII ზემოთ, რიგები 1–10, ტრიადები)'}
+                  </span>
+                </div>
+                <div className="flex items-center gap-1 bg-slate-950/90 border border-slate-800 p-1 rounded-xl shadow-inner self-end sm:self-auto">
+                  <button
+                    type="button"
+                    onClick={() => setTableView('long')}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      tableView === 'long'
+                        ? 'bg-cyan-500 text-slate-950 shadow-sm font-black'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                    }`}
+                    title="პირველი ცხრილი: თანამედროვე 18-სვეტიანი IUPAC ცხრილი"
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5" />
+                    <span>1. 18-სვეტიანი (IUPAC)</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setTableView('short')}
+                    className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      tableView === 'short'
+                        ? 'bg-amber-500 text-slate-950 shadow-sm font-black'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
+                    }`}
+                    title="მეორე ცხრილი: სასკოლო მოკლეპერიოდიანი ცხრილი (I–VIII ჯგუფები)"
+                  >
+                    <TableProperties className="w-3.5 h-3.5" />
+                    <span>2. სასკოლო მოკლე (I–VIII)</span>
+                  </button>
+                </div>
               </div>
 
-              <PeriodicTable
-                elements={ELEMENTS}
-                selectedElements={selectedElements}
-                activeElement={activeElement}
-                filterCategory={filterCategory}
-                filterPhase={filterPhase}
-                searchQuery={searchQuery}
-                onElementClick={handleElementClick}
-              />
+              {tableView === 'long' ? (
+                <PeriodicTable
+                  elements={ELEMENTS}
+                  selectedElements={selectedElements}
+                  activeElement={activeElement}
+                  filterCategory={filterCategory}
+                  filterPhase={filterPhase}
+                  searchQuery={searchQuery}
+                  onElementClick={handleElementClick}
+                />
+              ) : (
+                <ShortPeriodicTable
+                  elements={ELEMENTS}
+                  selectedElements={selectedElements}
+                  activeElement={activeElement}
+                  filterCategory={filterCategory}
+                  filterPhase={filterPhase}
+                  searchQuery={searchQuery}
+                  onElementClick={handleElementClick}
+                />
+              )}
             </section>
           </>
         )}
