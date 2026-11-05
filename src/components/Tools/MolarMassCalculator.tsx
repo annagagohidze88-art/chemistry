@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { calculateMolarMass, type MolarMassResult } from '../../utils/molarMass';
-import { Scale, Sparkles, AlertCircle, CheckCircle2, X, Droplets } from 'lucide-react';
+import { searchFormulas, type FormulaSuggestion } from '../../data/popularFormulas';
+import { Scale, Sparkles, AlertCircle, CheckCircle2, X, Droplets, ChevronRight } from 'lucide-react';
 
 const PRESETS = [
   { label: 'H₂O (წყალი)', formula: 'H2O' },
@@ -16,18 +17,96 @@ const PRESETS = [
 
 export const MolarMassCalculator: React.FC = () => {
   const [inputFormula, setInputFormula] = useState('CuSO4.5H2O');
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState<number>(-1);
+  const inputContainerRef = useRef<HTMLDivElement>(null);
+
   const [result, setResult] = useState<MolarMassResult | { error: string } | null>(() =>
     calculateMolarMass('CuSO4.5H2O')
   );
+
+  // Suggested formulas matching user input in real-time
+  const suggestions = useMemo(() => {
+    return searchFormulas(inputFormula, 8);
+  }, [inputFormula]);
+
+  // Pre-calculate masses for matched suggestions
+  const suggestionsWithMass = useMemo(() => {
+    return suggestions.map(s => {
+      const calc = calculateMolarMass(s.formula);
+      const mass = 'totalMass' in calc ? calc.totalMass.toFixed(2) : undefined;
+      return { ...s, mass };
+    });
+  }, [suggestions]);
+
+  // Click outside listener to dismiss dropdown
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        inputContainerRef.current &&
+        !inputContainerRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleCalculate = (formulaToCalc = inputFormula) => {
     const res = calculateMolarMass(formulaToCalc);
     setResult(res);
   };
 
+  const handleSelectSuggestion = (s: FormulaSuggestion) => {
+    setInputFormula(s.formula);
+    handleCalculate(s.formula);
+    setIsDropdownOpen(false);
+    setHighlightedIndex(-1);
+  };
+
   const handleSelectPreset = (f: string) => {
     setInputFormula(f);
     handleCalculate(f);
+    setIsDropdownOpen(false);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (isDropdownOpen && suggestionsWithMass.length > 0) {
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setHighlightedIndex(prev =>
+          prev < suggestionsWithMass.length - 1 ? prev + 1 : 0
+        );
+        return;
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setHighlightedIndex(prev =>
+          prev > 0 ? prev - 1 : suggestionsWithMass.length - 1
+        );
+        return;
+      }
+      if (e.key === 'Enter') {
+        if (highlightedIndex >= 0 && highlightedIndex < suggestionsWithMass.length) {
+          e.preventDefault();
+          handleSelectSuggestion(suggestionsWithMass[highlightedIndex]);
+          return;
+        }
+      }
+      if (e.key === 'Escape') {
+        setIsDropdownOpen(false);
+        return;
+      }
+    }
+
+    if (e.key === 'Enter') {
+      handleCalculate();
+      setIsDropdownOpen(false);
+    }
   };
 
   return (
@@ -52,33 +131,117 @@ export const MolarMassCalculator: React.FC = () => {
         </div>
       </div>
 
-      {/* Input Field & Presets */}
-      <div className="space-y-3">
-        <div className="flex flex-col sm:flex-row items-stretch gap-2">
+      {/* Input Field with Intelligent Autocomplete Suggestions */}
+      <div className="space-y-3" ref={inputContainerRef}>
+        <div className="flex flex-col sm:flex-row items-stretch gap-2 relative">
           <div className="relative flex-1">
             <input
               type="text"
               value={inputFormula}
-              onChange={e => setInputFormula(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleCalculate()}
-              placeholder="მაგ: Ca(OH)2 ან CuSO4.5H2O ან C6H12O6"
-              className="w-full bg-slate-950 border-2 border-slate-750 focus:border-amber-500 rounded-xl px-4 py-3 text-base sm:text-lg font-mono font-bold text-white placeholder-slate-600 outline-none transition-colors shadow-inner"
+              onChange={e => {
+                setInputFormula(e.target.value);
+                setIsDropdownOpen(true);
+                setHighlightedIndex(0);
+              }}
+              onFocus={() => {
+                setIsDropdownOpen(true);
+              }}
+              onKeyDown={handleKeyDown}
+              placeholder="ჩაწერეთ ფორმულა (მაგ: Na, H2SO4, CaCO3, CuSO4.5H2O)..."
+              className="w-full bg-slate-950 border-2 border-slate-750 focus:border-amber-500 rounded-xl px-4 py-3 text-base sm:text-lg font-mono font-bold text-white placeholder-slate-600 outline-none transition-all shadow-inner"
             />
             {inputFormula && (
               <button
                 type="button"
-                onClick={() => setInputFormula('')}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1 rounded-md"
+                onClick={() => {
+                  setInputFormula('');
+                  setIsDropdownOpen(false);
+                }}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 p-1 rounded-md transition-colors"
                 title="გასუფთავება"
               >
                 <X className="w-4 h-4" />
               </button>
             )}
+
+            {/* FLOATING PREDICTIVE FORMULAS DROPDOWN */}
+            {isDropdownOpen && inputFormula.trim().length > 0 && suggestionsWithMass.length > 0 && (
+              <div className="absolute left-0 right-0 top-full mt-1.5 z-50 bg-slate-950/95 backdrop-blur-2xl border-2 border-amber-500/50 rounded-2xl shadow-2xl shadow-black/80 overflow-hidden divide-y divide-slate-850 animate-fadeIn">
+                <div className="px-3.5 py-2 bg-gradient-to-r from-amber-500/15 via-slate-900 to-slate-950 flex items-center justify-between text-[11px] font-mono text-amber-300 font-bold border-b border-slate-800">
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>სავარაუდო ფორმულები ({suggestionsWithMass.length}):</span>
+                  </span>
+                  <span className="text-[10px] text-slate-400 font-sans hidden sm:inline">
+                    დააწკაპუნეთ ან გამოიყენეთ ↑↓ ისრები და Enter
+                  </span>
+                </div>
+
+                <div className="max-h-72 overflow-y-auto custom-scrollbar">
+                  {suggestionsWithMass.map((s, idx) => {
+                    const isHighlighted = idx === highlightedIndex;
+
+                    return (
+                      <button
+                        key={`${s.formula}-${idx}`}
+                        type="button"
+                        onMouseDown={e => {
+                          e.preventDefault();
+                          handleSelectSuggestion(s);
+                        }}
+                        onMouseEnter={() => setHighlightedIndex(idx)}
+                        className={`w-full text-left px-3.5 py-2.5 flex items-center justify-between gap-3 transition-colors cursor-pointer ${
+                          isHighlighted
+                            ? 'bg-amber-500/20 text-white'
+                            : 'hover:bg-slate-900 text-slate-200'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          {/* Formatted Chemical Formula */}
+                          <span className="font-mono text-base font-black text-amber-300 tracking-tight shrink-0 bg-slate-900 px-2 py-0.5 rounded-lg border border-amber-500/35 shadow-sm">
+                            {s.displayFormula}
+                          </span>
+
+                          {/* Georgian name & optional English */}
+                          <div className="min-w-0 truncate">
+                            <div className="text-xs sm:text-sm font-semibold truncate text-slate-100 flex items-center gap-1.5">
+                              <span>{s.nameKa}</span>
+                            </div>
+                            {s.nameEn && (
+                              <div className="text-[10px] text-slate-400 truncate italic">
+                                {s.nameEn}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Category & Molar Mass Preview */}
+                        <div className="flex items-center gap-2 shrink-0">
+                          <span className="hidden md:inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-850 text-slate-300 border border-slate-750">
+                            {s.category}
+                          </span>
+                          {s.mass && (
+                            <span className="font-mono text-xs font-bold text-amber-300 bg-amber-950/70 border border-amber-500/30 px-2 py-0.5 rounded-lg shadow-sm">
+                              {s.mass} გ/მოლი
+                            </span>
+                          )}
+                          <ChevronRight className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
+
           <button
             type="button"
-            onClick={() => handleCalculate()}
-            className="px-6 py-3 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 cursor-pointer text-sm"
+            onClick={() => {
+              handleCalculate();
+              setIsDropdownOpen(false);
+            }}
+            className="px-6 py-3 bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 cursor-pointer text-sm shrink-0"
           >
             <Sparkles className="w-4 h-4" />
             <span>გამოთვლა</span>
