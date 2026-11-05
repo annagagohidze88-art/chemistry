@@ -12,6 +12,7 @@ import {
   Droplets,
   Box,
   Unlock,
+  AlertCircle,
 } from 'lucide-react';
 
 export const ElementGuesserGame: React.FC = () => {
@@ -24,6 +25,7 @@ export const ElementGuesserGame: React.FC = () => {
 
   const [unlockedClues, setUnlockedClues] = useState<number[]>([1, 2]); // First 2 clues free
   const [guessInput, setGuessInput] = useState('');
+  const [inputError, setInputError] = useState('');
   const [guesses, setGuesses] = useState<{ element: ChemicalElement; direction: 'higher' | 'lower' | 'correct' }[]>([]);
   const [isGameOver, setIsGameOver] = useState(false);
   const [score, setScore] = useState(100);
@@ -57,6 +59,7 @@ export const ElementGuesserGame: React.FC = () => {
     { id: 4, title: 'ვალენტობა და ელექტროუარყოფითობა', value: `ვალენტობა: ${targetElement.valency} | ელექტროუარყოფითობა: ${targetElement.electronegativity ?? '—'}`, cost: 20 },
     { id: 5, title: 'გამოყენების სფერო', value: targetElement.uses[0] || 'სამეცნიერო კვლევები', cost: 25 },
     { id: 6, title: 'აღმოჩენის ისტორია', value: targetElement.discoveryYear || 'ანტიკური ხანა', cost: 20 },
+    { id: 7, title: 'მთავარი მახასიათებელი & მინიშნება', value: targetElement.summary, cost: 25 },
   ], [targetElement]);
 
   const handleUnlockClue = (id: number, cost: number) => {
@@ -75,9 +78,10 @@ export const ElementGuesserGame: React.FC = () => {
     );
 
     if (!guessedEl) {
-      alert('ელემენტი ვერ მოიძებნა. გთხოვთ შეიყვანოთ ქართული სახელი ან სიმბოლო (მაგ. წყალბადი ან H).');
+      setInputError('ელემენტი ვერ მოიძებნა. გთხოვთ შეიყვანოთ ქართული სახელი ან სიმბოლო (მაგ. წყალბადი, Fe, ოქრო)...');
       return;
     }
+    setInputError('');
 
     let direction: 'higher' | 'lower' | 'correct' = 'correct';
     if (guessedEl.atomicNumber === targetElement.atomicNumber) {
@@ -187,22 +191,33 @@ export const ElementGuesserGame: React.FC = () => {
       {/* Guess Input & Controls */}
       <div className="space-y-3">
         {!isGameOver ? (
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={guessInput}
-              onChange={e => setGuessInput(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleGuess()}
-              placeholder="შეიყვანეთ ელემენტის სახელი ან სიმბოლო (მაგ. რკინა ან Fe)..."
-              className="flex-1 bg-slate-950 border-2 border-slate-750 focus:border-rose-500 rounded-xl px-4 py-3 text-sm sm:text-base font-mono font-bold text-white placeholder-slate-600 outline-none transition-colors shadow-inner"
-            />
-            <button
-              type="button"
-              onClick={handleGuess}
-              className="px-6 py-3 bg-gradient-to-r from-rose-500 to-indigo-600 hover:from-rose-400 hover:to-indigo-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-rose-500/20 cursor-pointer text-sm shrink-0"
-            >
-              შემოწმება
-            </button>
+          <div className="space-y-2">
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={guessInput}
+                onChange={e => {
+                  setGuessInput(e.target.value);
+                  if (inputError) setInputError('');
+                }}
+                onKeyDown={e => e.key === 'Enter' && handleGuess()}
+                placeholder="შეიყვანეთ ელემენტის სახელი ან სიმბოლო (მაგ. რკინა ან Fe)..."
+                className="flex-1 bg-slate-950 border-2 border-slate-750 focus:border-rose-500 rounded-xl px-4 py-3 text-sm sm:text-base font-mono font-bold text-white placeholder-slate-600 outline-none transition-colors shadow-inner"
+              />
+              <button
+                type="button"
+                onClick={handleGuess}
+                className="px-6 py-3 bg-gradient-to-r from-rose-500 to-indigo-600 hover:from-rose-400 hover:to-indigo-500 text-white font-bold rounded-xl transition-all shadow-lg shadow-rose-500/20 cursor-pointer text-sm shrink-0"
+              >
+                შემოწმება
+              </button>
+            </div>
+            {inputError && (
+              <div className="p-3 rounded-xl bg-rose-950/60 border border-rose-800 text-rose-200 text-xs flex items-center gap-2 animate-fadeIn">
+                <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                <span>{inputError}</span>
+              </div>
+            )}
           </div>
         ) : (
           <div className="p-5 rounded-2xl bg-gradient-to-br from-emerald-950/70 to-slate-900 border-2 border-emerald-500/60 text-center space-y-3 animate-fadeIn">
