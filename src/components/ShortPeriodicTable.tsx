@@ -1,4 +1,5 @@
 import React from 'react';
+import { Image as ImageIcon } from 'lucide-react';
 import type { ChemicalElement, ElementCategory, ElementPhase } from '../types/element';
 import { ShortElementTile } from './ShortElementTile';
 import { ElementHoverCard } from './ElementHoverCard';
@@ -23,6 +24,7 @@ export const ShortPeriodicTable: React.FC<ShortPeriodicTableProps> = ({
   searchQuery,
   onElementClick,
 }) => {
+  const [showPhotos, setShowPhotos] = React.useState<boolean>(true);
   const [hoveredElement, setHoveredElement] = React.useState<{
     element: ChemicalElement;
     pos: { x: number; y: number };
@@ -69,6 +71,7 @@ export const ShortPeriodicTable: React.FC<ShortPeriodicTableProps> = ({
         isDimmed={isDimmed}
         isHighlighted={isHighlighted}
         isGhostH={isGhostH}
+        showPhoto={showPhotos}
         onClick={onElementClick}
         onHover={(hoveredEl, pos) => {
           if (hoveredEl && pos) {
@@ -88,20 +91,35 @@ export const ShortPeriodicTable: React.FC<ShortPeriodicTableProps> = ({
     <div className="w-full overflow-x-auto custom-scrollbar pb-6 pt-2 select-none">
       <div className="min-w-[1080px] max-w-[1380px] mx-auto p-3.5 bg-gradient-to-b from-slate-950 via-slate-900/90 to-slate-950 border border-slate-750/90 rounded-2xl shadow-2xl">
         {/* Table Title Banner */}
-        <div className="flex items-center justify-between border-b border-slate-750 pb-3 mb-3">
-          <div className="flex-1 text-center">
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-3 border-b border-slate-750 pb-3 mb-3">
+          <div className="flex-1 text-center lg:text-left">
             <h2 className="text-xl sm:text-2xl font-black text-slate-100 uppercase tracking-wider font-serif bg-gradient-to-r from-amber-200 via-white to-amber-200 bg-clip-text text-transparent">
               ქიმიურ ელემენტთა პერიოდული სისტემა
             </h2>
             <p className="text-xs text-slate-400 mt-0.5">
-              მოკლეპერიოდიანი სასკოლო ფორმა (ჯგუფები I–VIII ზემოთ, რიგები და ტრიადები)
+              მოკლეპერიოდიანი სასკოლო ფორმა (ჯგუფები I–VIII ზემოთ, რიგები და ტრიადები) • ფოტო-ილუსტრაციებით
             </p>
           </div>
 
-          {/* Top-Right Info Box */}
-          <div className="flex items-center gap-3.5 bg-slate-900/90 border border-slate-750 px-3.5 py-1.5 rounded-xl shadow-lg backdrop-blur-md">
+          {/* Top-Right Info Box & Photo Switcher */}
+          <div className="flex items-center gap-3 bg-slate-900/90 border border-slate-750 px-3 py-1.5 rounded-xl shadow-lg backdrop-blur-md">
+            {/* Toggle Photos Mode */}
+            <button
+              type="button"
+              onClick={() => setShowPhotos(prev => !prev)}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
+                showPhotos
+                  ? 'bg-sky-500/20 border-sky-400/60 text-sky-200 shadow-sm shadow-sky-500/20'
+                  : 'bg-slate-950/80 border-slate-750 text-slate-400 hover:text-slate-200'
+              }`}
+              title="ელემენტების რეალური ფოტოების ჩვენება / გამორთვა"
+            >
+              <ImageIcon className="w-3.5 h-3.5 text-sky-400" />
+              <span>ფოტოები: {showPhotos ? 'ჩართულია' : 'გამორთულია'}</span>
+            </button>
+
             {/* Color Legend */}
-            <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-[10px] font-medium">
+            <div className="grid grid-cols-2 gap-x-2.5 gap-y-0.5 text-[10px] font-medium border-l border-slate-800 pl-3">
               <div className="flex items-center gap-1.5 text-rose-300">
                 <span className="w-2.5 h-2.5 bg-rose-500 rounded-sm shadow-sm shadow-rose-500/50" />
                 <span>s-ბლოკი</span>
@@ -121,12 +139,24 @@ export const ShortPeriodicTable: React.FC<ShortPeriodicTableProps> = ({
             </div>
 
             {/* Sample cell breakdown icon */}
-            <div className="border border-slate-700/80 rounded-lg bg-slate-950/90 p-1.5 w-16 text-center text-[9px] leading-tight shadow-inner">
-              <div className="flex justify-between font-mono text-[8.5px] text-slate-400">
-                <span className="text-blue-300 font-bold">Au</span>
-                <span>79</span>
+            <div className="relative border border-blue-500/50 rounded-lg bg-slate-950/90 p-1.5 w-16 text-center text-[9px] leading-tight shadow-inner overflow-hidden">
+              {showPhotos && (
+                <div className="absolute inset-0 pointer-events-none opacity-60">
+                  <img
+                    src="https://upload.wikimedia.org/wikipedia/commons/8/8a/Gold_%2879_Au%29.jpg"
+                    alt="Au"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/40" />
+                </div>
+              )}
+              <div className="relative z-10 flex justify-between font-mono text-[8.5px] text-slate-300">
+                <span className="text-blue-200 font-black">Au</span>
+                <span className="font-bold text-slate-400">79</span>
               </div>
-              <div className="text-[8px] text-slate-200 font-semibold truncate mt-0.5">ოქრო</div>
+              <div className="relative z-10 text-[8px] text-white font-bold truncate mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.95)]">
+                ოქრო
+              </div>
             </div>
           </div>
         </div>

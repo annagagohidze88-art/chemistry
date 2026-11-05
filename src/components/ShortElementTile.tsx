@@ -9,6 +9,7 @@ interface ShortElementTileProps {
   isDimmed?: boolean;
   isHighlighted?: boolean;
   isGhostH?: boolean;
+  showPhoto?: boolean;
   onClick: (element: ChemicalElement) => void;
   onHover?: (element: ChemicalElement | null, pos: { x: number; y: number } | null) => void;
 }
@@ -20,44 +21,46 @@ export const ShortElementTile: React.FC<ShortElementTileProps> = ({
   isDimmed = false,
   isHighlighted = false,
   isGhostH = false,
+  showPhoto = true,
   onClick,
   onHover,
 }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [imgFailed, setImgFailed] = useState(false);
   const isSelected = selectionIndex !== null;
 
   // Colors strictly based on the school chart:
   // s-block: Red/Crimson, p-block: Amber/Orange, d-block: Blue, f-block: Purple
   let colorTheme = {
-    symbolColor: 'text-rose-200 group-hover:text-white drop-shadow-[0_1px_3px_rgba(244,63,94,0.5)]',
-    borderColor: 'border-rose-500/40 hover:border-rose-400 hover:shadow-rose-500/20',
-    bgColor: 'bg-gradient-to-b from-rose-500/20 via-rose-500/10 to-slate-950/60 hover:from-rose-500/30 hover:to-slate-900/80',
-    numberColor: 'text-rose-300/90 group-hover:text-rose-100',
+    symbolColor: 'text-rose-100 group-hover:text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]',
+    borderColor: 'border-rose-500/50 hover:border-rose-400 hover:shadow-rose-500/30',
+    bgColor: 'bg-gradient-to-b from-rose-500/20 via-rose-500/10 to-slate-950/80 hover:from-rose-500/30 hover:to-slate-900/90',
+    numberColor: 'text-rose-300 group-hover:text-rose-100',
     neonColor: '#f43f5e',
   };
 
   if (element.block === 'p') {
     colorTheme = {
-      symbolColor: 'text-amber-200 group-hover:text-white drop-shadow-[0_1px_3px_rgba(245,158,11,0.5)]',
-      borderColor: 'border-amber-500/40 hover:border-amber-400 hover:shadow-amber-500/20',
-      bgColor: 'bg-gradient-to-b from-amber-500/20 via-amber-500/10 to-slate-950/60 hover:from-amber-500/30 hover:to-slate-900/80',
-      numberColor: 'text-amber-300/90 group-hover:text-amber-100',
+      symbolColor: 'text-amber-100 group-hover:text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]',
+      borderColor: 'border-amber-500/50 hover:border-amber-400 hover:shadow-amber-500/30',
+      bgColor: 'bg-gradient-to-b from-amber-500/20 via-amber-500/10 to-slate-950/80 hover:from-amber-500/30 hover:to-slate-900/90',
+      numberColor: 'text-amber-300 group-hover:text-amber-100',
       neonColor: '#f59e0b',
     };
   } else if (element.block === 'd') {
     colorTheme = {
-      symbolColor: 'text-blue-200 group-hover:text-white drop-shadow-[0_1px_3px_rgba(59,130,246,0.5)]',
-      borderColor: 'border-blue-500/40 hover:border-blue-400 hover:shadow-blue-500/20',
-      bgColor: 'bg-gradient-to-b from-blue-500/20 via-blue-500/10 to-slate-950/60 hover:from-blue-500/30 hover:to-slate-900/80',
-      numberColor: 'text-blue-300/90 group-hover:text-blue-100',
+      symbolColor: 'text-blue-100 group-hover:text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]',
+      borderColor: 'border-blue-500/50 hover:border-blue-400 hover:shadow-blue-500/30',
+      bgColor: 'bg-gradient-to-b from-blue-500/20 via-blue-500/10 to-slate-950/80 hover:from-blue-500/30 hover:to-slate-900/90',
+      numberColor: 'text-blue-300 group-hover:text-blue-100',
       neonColor: '#3b82f6',
     };
   } else if (element.block === 'f') {
     colorTheme = {
-      symbolColor: 'text-purple-200 group-hover:text-white drop-shadow-[0_1px_3px_rgba(168,85,247,0.5)]',
-      borderColor: 'border-purple-500/40 hover:border-purple-400 hover:shadow-purple-500/20',
-      bgColor: 'bg-gradient-to-b from-purple-500/20 via-purple-500/10 to-slate-950/60 hover:from-purple-500/30 hover:to-slate-900/80',
-      numberColor: 'text-purple-300/90 group-hover:text-purple-100',
+      symbolColor: 'text-purple-100 group-hover:text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.95)]',
+      borderColor: 'border-purple-500/50 hover:border-purple-400 hover:shadow-purple-500/30',
+      bgColor: 'bg-gradient-to-b from-purple-500/20 via-purple-500/10 to-slate-950/80 hover:from-purple-500/30 hover:to-slate-900/90',
+      numberColor: 'text-purple-300 group-hover:text-purple-100',
       neonColor: '#a855f7',
     };
   }
@@ -76,6 +79,8 @@ export const ShortElementTile: React.FC<ShortElementTileProps> = ({
     onHover?.(null, null);
   };
 
+  const hasPhoto = Boolean(showPhoto && element.image?.url && !imgFailed);
+
   return (
     <button
       type="button"
@@ -87,9 +92,9 @@ export const ShortElementTile: React.FC<ShortElementTileProps> = ({
         isSelected ? ` - არჩეულია #${selectionIndex}` : ''
       }`}
       className={`
-        relative group flex flex-col justify-between p-1.5 rounded-lg border text-left
+        relative group flex flex-col justify-between p-1.5 rounded-lg border text-left overflow-hidden
         transition-all duration-200 select-none cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-cyan-400
-        w-full h-full min-h-[50px] sm:min-h-[54px] md:min-h-[58px] shadow-sm backdrop-blur-sm
+        w-full h-full min-h-[56px] sm:min-h-[62px] md:min-h-[66px] shadow-sm backdrop-blur-sm
         ${colorTheme.bgColor} ${colorTheme.borderColor}
         ${isDimmed ? 'opacity-20 grayscale scale-[0.97]' : 'opacity-100 hover:scale-[1.04] hover:-translate-y-0.5 hover:z-20 hover:shadow-lg'}
         ${isHighlighted ? 'ring-2 ring-amber-400 shadow-lg shadow-amber-500/25 scale-[1.02] z-10' : ''}
@@ -104,9 +109,31 @@ export const ShortElementTile: React.FC<ShortElementTileProps> = ({
           : undefined,
       }}
     >
+      {/* Element Photograph Background */}
+      {hasPhoto && (
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <img
+            src={element.image?.url}
+            alt={element.nameKa}
+            loading="lazy"
+            onError={() => setImgFailed(true)}
+            className="w-full h-full object-cover object-center opacity-70 group-hover:opacity-95 group-hover:scale-110 transition-all duration-300 pointer-events-none filter brightness-90 group-hover:brightness-100"
+          />
+          {/* High-contrast gradient overlay to guarantee text legibility */}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-slate-950/40 pointer-events-none" />
+          {/* Subtle block accent tint */}
+          <div
+            className="absolute inset-0 opacity-15 mix-blend-color pointer-events-none"
+            style={{ backgroundColor: colorTheme.neonColor }}
+          />
+        </div>
+      )}
+
       {/* Reticle Corner Brackets [ ] */}
       {(isHovered || isActiveDetail) && (
-        <ReticleCorners color="#38bdf8" size={6} thickness={1.8} offset={-2} />
+        <div className="z-20">
+          <ReticleCorners color="#38bdf8" size={6} thickness={1.8} offset={-2} />
+        </div>
       )}
 
       {/* Selection Badge */}
@@ -117,17 +144,17 @@ export const ShortElementTile: React.FC<ShortElementTileProps> = ({
       )}
 
       {/* Top Row: Symbol (left) & Atomic Number (right) */}
-      <div className="flex items-start justify-between w-full leading-none">
+      <div className="relative z-10 flex items-start justify-between w-full leading-none">
         <span className={`text-base sm:text-lg md:text-xl font-black font-sans tracking-tight ${colorTheme.symbolColor}`}>
           {isGhostH ? '(H)' : element.symbol}
         </span>
-        <span className={`text-[9px] md:text-[10px] font-mono font-bold px-1 py-0.2 rounded bg-slate-950/70 border border-slate-800 ${colorTheme.numberColor}`}>
+        <span className={`text-[9px] md:text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-950/85 backdrop-blur-sm border border-slate-800/90 shadow-sm ${colorTheme.numberColor}`}>
           {element.atomicNumber}
         </span>
       </div>
 
       {/* Bottom: Georgian Name */}
-      <div className="truncate w-full text-[8.5px] sm:text-[9.5px] font-medium leading-tight text-slate-200 group-hover:text-white mt-1 transition-colors">
+      <div className="relative z-10 truncate w-full text-[8.5px] sm:text-[9.5px] font-bold leading-tight text-slate-100 group-hover:text-white mt-1 drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)] transition-colors">
         {element.nameKa}
       </div>
     </button>

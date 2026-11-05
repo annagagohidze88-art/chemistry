@@ -99,21 +99,29 @@ export const ElementHoverCard: React.FC<ElementHoverCardProps> = ({
 
       {/* Header Section: Mini Element Tile + Names + Category */}
       <div className="flex items-start gap-3">
-        {/* Mini Element Tile Square (matching Screenshot 2 Rhodium mini square) */}
+        {/* Mini Element Tile Square (matching Screenshot 2 Rhodium mini square) with photo */}
         <div
-          className="w-12 h-12 rounded-xl border flex flex-col justify-between p-1 shrink-0 bg-[#070b11] shadow-inner transition-colors"
+          className="relative w-12 h-12 rounded-xl border flex flex-col justify-between p-1 shrink-0 bg-[#070b11] shadow-inner transition-colors overflow-hidden"
           style={{
             borderColor: `${theme.neonColor}60`,
             boxShadow: `0 0 14px ${theme.neonColor}30`,
           }}
         >
-          <span className="text-[9px] font-mono font-bold text-slate-400 leading-none">
+          {element.image?.url && (
+            <img
+              src={element.image.url}
+              alt={element.nameKa}
+              className="absolute inset-0 w-full h-full object-cover opacity-60 pointer-events-none"
+            />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-slate-950/40 pointer-events-none" />
+          <span className="relative z-10 text-[9px] font-mono font-bold text-slate-300 leading-none">
             {element.atomicNumber}
           </span>
-          <span className="text-xl font-black font-sans text-white text-center leading-none tracking-tight">
+          <span className="relative z-10 text-xl font-black font-sans text-white text-center leading-none tracking-tight drop-shadow-md">
             {element.symbol}
           </span>
-          <span className="text-[7.5px] font-mono text-slate-500 uppercase text-right leading-none">
+          <span className="relative z-10 text-[7.5px] font-mono text-slate-400 uppercase text-right leading-none">
             {element.block}-blk
           </span>
         </div>
