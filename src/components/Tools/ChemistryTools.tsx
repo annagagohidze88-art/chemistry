@@ -3,12 +3,18 @@ import { MolarMassCalculator } from './MolarMassCalculator';
 import { EquationBalancer } from './EquationBalancer';
 import { ElectronConfigTrainer } from './ElectronConfigTrainer';
 import { ElementComparator } from './ElementComparator';
-import { Scale, Equal, Atom, Columns3 } from 'lucide-react';
+import { SolubilityTable } from './SolubilityTable';
+import { OxidesAcidsTable } from './OxidesAcidsTable';
+import { Scale, Equal, Atom, Columns3, Waves, Flame } from 'lucide-react';
 
-type ToolTab = 'molar' | 'balancer' | 'config' | 'compare';
+export type ToolTab = 'molar' | 'balancer' | 'config' | 'compare' | 'solubility' | 'oxides';
 
-export const ChemistryTools: React.FC = () => {
-  const [activeTool, setActiveTool] = useState<ToolTab>('molar');
+interface ChemistryToolsProps {
+  initialTab?: ToolTab;
+}
+
+export const ChemistryTools: React.FC<ChemistryToolsProps> = ({ initialTab = 'solubility' }) => {
+  const [activeTool, setActiveTool] = useState<ToolTab>(initialTab);
 
   return (
     <div className="space-y-4">
@@ -16,10 +22,36 @@ export const ChemistryTools: React.FC = () => {
       <div className="flex flex-wrap items-center gap-2 bg-slate-900 border border-slate-800 rounded-2xl p-2 shadow-inner">
         <button
           type="button"
+          onClick={() => setActiveTool('solubility')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
+            activeTool === 'solubility'
+              ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-slate-950 font-black shadow-md shadow-cyan-500/25'
+              : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+          }`}
+        >
+          <Waves className="w-4 h-4" />
+          <span>ხსნადობის ცხრილი</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTool('oxides')}
+          className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
+            activeTool === 'oxides'
+              ? 'bg-gradient-to-r from-rose-500 to-amber-500 text-slate-950 font-black shadow-md shadow-rose-500/25'
+              : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+          }`}
+        >
+          <Flame className="w-4 h-4" />
+          <span>ოქსიდები & შესაბამისი მჟავები</span>
+        </button>
+
+        <button
+          type="button"
           onClick={() => setActiveTool('molar')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
             activeTool === 'molar'
-              ? 'bg-gradient-to-r from-amber-500 to-rose-600 text-slate-950 shadow-md shadow-amber-500/25'
+              ? 'bg-gradient-to-r from-amber-500 to-rose-600 text-slate-950 font-black shadow-md shadow-amber-500/25'
               : 'text-slate-300 hover:bg-slate-800 hover:text-white'
           }`}
         >
@@ -58,7 +90,7 @@ export const ChemistryTools: React.FC = () => {
           onClick={() => setActiveTool('compare')}
           className={`flex items-center gap-2 px-4 py-2.5 rounded-xl font-bold text-xs sm:text-sm transition-all cursor-pointer ${
             activeTool === 'compare'
-              ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 shadow-md shadow-emerald-500/25'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black shadow-md shadow-emerald-500/25'
               : 'text-slate-300 hover:bg-slate-800 hover:text-white'
           }`}
         >
@@ -69,6 +101,8 @@ export const ChemistryTools: React.FC = () => {
 
       {/* Active Tool View */}
       <div>
+        {activeTool === 'solubility' && <SolubilityTable />}
+        {activeTool === 'oxides' && <OxidesAcidsTable />}
         {activeTool === 'molar' && <MolarMassCalculator />}
         {activeTool === 'balancer' && <EquationBalancer />}
         {activeTool === 'config' && <ElectronConfigTrainer />}

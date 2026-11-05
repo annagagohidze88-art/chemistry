@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Atom, Info, FlaskConical, LayoutGrid, TableProperties, Calculator, Gamepad2, Pin } from 'lucide-react';
+import { Atom, Info, FlaskConical, LayoutGrid, TableProperties, Calculator, Gamepad2, Pin, Waves, Flame, Sparkles } from 'lucide-react';
 import { ELEMENTS } from './data/elements';
 import type { ChemicalElement, ElementCategory, ElementPhase } from './types/element';
 import { PeriodicTable } from './components/PeriodicTable';
@@ -10,7 +10,7 @@ import { ElementDetails } from './components/ElementDetails';
 import { CompoundExplorer } from './components/CompoundExplorer';
 import { Instructions } from './components/Instructions';
 import { AtomicLab3D } from './components/AtomicLab3D/AtomicLab3D';
-import { ChemistryTools } from './components/Tools/ChemistryTools';
+import { ChemistryTools, type ToolTab } from './components/Tools/ChemistryTools';
 import { ChemistryGames } from './components/Games/ChemistryGames';
 import { AnimatedAtomLogo } from './components/AnimatedAtomLogo';
 import { countByCategory, toggleElementInSelection } from './utils/selection';
@@ -22,6 +22,7 @@ type ActiveTab = 'table' | 'atomic3d' | 'tools' | 'games';
 function App() {
   const [activeTab, setActiveTab] = useState<ActiveTab>('table');
   const [tableView, setTableView] = useState<TableView>('long');
+  const [toolsSubTab, setToolsSubTab] = useState<ToolTab>('solubility');
   const [atomicLabElement, setAtomicLabElement] = useState<ChemicalElement | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [filterCategory, setFilterCategory] = useState<ElementCategory | 'all'>('all');
@@ -152,7 +153,7 @@ function App() {
                 <Calculator className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>ხელსაწყოები</span>
                 <span className="text-[9px] px-1.5 py-0.2 rounded-full bg-amber-400/30 text-amber-200 font-mono">
-                  4
+                  6
                 </span>
               </button>
 
@@ -270,7 +271,7 @@ function App() {
           />
         )}
 
-        {activeTab === 'tools' && <ChemistryTools />}
+        {activeTab === 'tools' && <ChemistryTools key={toolsSubTab} initialTab={toolsSubTab} />}
 
         {activeTab === 'games' && <ChemistryGames />}
 
@@ -310,6 +311,38 @@ function App() {
                 </span>
               </div>
             )}
+
+            {/* Quick Reference Tables Bar */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-3 rounded-2xl bg-slate-900/80 border border-slate-750 backdrop-blur-md shadow-md text-xs">
+              <span className="font-semibold text-slate-200 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>სასკოლო ცნობარები & ცხრილები:</span>
+              </span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setToolsSubTab('solubility');
+                    setActiveTab('tools');
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/15 border border-cyan-500/40 text-cyan-300 hover:bg-cyan-500/25 font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                >
+                  <Waves className="w-3.5 h-3.5" />
+                  <span>1. ხსნადობის ცხრილი (20 °C)</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setToolsSubTab('oxides');
+                    setActiveTab('tools');
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/15 border border-rose-500/40 text-rose-300 hover:bg-rose-500/25 font-bold transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                >
+                  <Flame className="w-3.5 h-3.5" />
+                  <span>2. ოქსიდები & შესაბამისი მჟავები</span>
+                </button>
+              </div>
+            </div>
 
             {/* PERIODIC TABLE DISPLAY (18-COLUMN IUPAC vs SHORT SCHOOL TABLE) */}
             <section
